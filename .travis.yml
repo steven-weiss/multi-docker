@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t stevenweiss/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run stevenweiss/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t stevenweiss/multi-client ./client
+  - docker build -t stevenweiss/multi-nginx ./nginx
+  - docker build -t stevenweiss/multi-server ./server
+  - docker build -t stevenweiss/multi-worker ./worker
+
+  # log in to docker CLI
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_ID" --password-stdin
+
+  ## push images up to docker hub
+  - docker push stevenweiss/multi-client
+  - docker push stevenweiss/multi-nginx
+  - docker push stevenweiss/multi-server
+  - docker push stevenweiss/multi-worker
+  
