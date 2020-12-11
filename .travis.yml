@@ -14,7 +14,7 @@ after_success:
   - docker build -t stevenweiss/multi-server ./server
   - docker build -t stevenweiss/multi-worker ./worker
 
-  # log in to docker CLI
+  ## log in to docker CLI
   - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_ID" --password-stdin
 
   ## push images up to docker hub
